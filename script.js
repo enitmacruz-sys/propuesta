@@ -50,21 +50,32 @@ function startMusic() {
   const audio = document.getElementById('bg-music');
   if (!audio) return;
 
-  audio.currentTime = MUSIC_START_TIME;
+  /* iOS/Android requieren que currentTime se setee DESPUÉS de play() en algunos casos */
   audio.volume = 0;
 
-  audio.play().then(() => {
+  const playPromise = audio.play();
+
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
+      musicStarted = true;
+      /* Saltar al segundo correcto una vez que está reproduciéndose */
+      audio.currentTime = MUSIC_START_TIME;
+      /* Fade-in suave */
+      let vol = 0;
+      const fadeIn = setInterval(() => {
+        vol = Math.min(vol + 0.02, 0.80);
+        audio.volume = vol;
+        if (vol >= 0.80) clearInterval(fadeIn);
+      }, 50);
+    }).catch(() => {
+      /* Navegador bloqueó — reintentar en próximo gesto */
+      musicStarted = false;
+    });
+  } else {
+    /* Fallback para navegadores sin Promise */
     musicStarted = true;
-    /* Fade-in suave: 0 → 0.80 en ~2.5 segundos */
-    let vol = 0;
-    const fadeIn = setInterval(() => {
-      vol = Math.min(vol + 0.02, 0.80);
-      audio.volume = vol;
-      if (vol >= 0.80) clearInterval(fadeIn);
-    }, 50);
-  }).catch(() => {
-    musicStarted = false;
-  });
+    audio.currentTime = MUSIC_START_TIME;
+  }
 }
 
 function bindMusicToggle() {
@@ -168,7 +179,8 @@ function bindOpenLetter() {
   }
 
   btnOpen.addEventListener('click',      openLetter);
-  btnOpen.addEventListener('touchstart', (e) => { e.preventDefault(); openLetter(); }, { passive: false });
+  /* pointerup funciona en touch Y mouse, y no bloquea el audio en iOS */
+  btnOpen.addEventListener('pointerup',  openLetter);
 }
 
 function showProposalScreen() {

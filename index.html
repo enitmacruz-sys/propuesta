@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💖 Una Pregunta Especial</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Audio — arranca al abrir la carta -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="Sebastian Yatra - Cristina (Letra).mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- ===== PANTALLA 0: CARTA ===== -->
+  <section id="screen-letter" class="screen active">
+    <canvas id="letter-stars-canvas"></canvas>
+
+    <div class="letter-wrapper">
+      <!-- Sobre -->
+      <div class="envelope" id="envelope">
+        <div class="env-flap"></div>
+        <div class="env-body">
+          <div class="env-heart">💌</div>
+        </div>
+        <div class="env-bottom"></div>
+      </div>
+
+      <!-- Carta eliminada — el contenido va directo en la pantalla de propuesta -->
+
+
+      <button id="btn-open" class="btn-open" aria-label="Abrir carta">
+        💌 Abrir
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== PANTALLA 1: PROPUESTA ===== -->
+  <section id="screen-proposal" class="screen">
+    <canvas id="stars-canvas"></canvas>
+    <div id="particles-proposal"></div>
+
+    <div class="proposal-card">
+      <div class="card-glow"></div>
+      <div class="card-inner">
+        <div class="hearts-deco">💖 💕 💖</div>
+        <h1 class="proposal-title">Pulga,<br>¿Quieres ser<br>mi novi@?</h1>
+        <p class="proposal-emoji">💖</p>
+        <div class="buttons-wrapper">
+          <button id="btn-no" class="btn btn-no" aria-label="No">
+            No 💗
+          </button>
+          <button id="btn-yes" class="btn btn-yes" aria-label="Sí">
+            Sí 💘
+          </button>
+        </div>
+        <p id="no-message" class="no-message" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PANTALLA 2: AMOR ===== -->
+  <section id="screen-love" class="screen">
+    <div class="love-bg-glow"></div>
+    <div id="messages-container"></div>
+    <div class="black-hole">
+      <div class="black-hole-ring bh-ring1"></div>
+      <div class="black-hole-ring bh-ring2"></div>
+      <div class="black-hole-core"></div>
+    </div>
+    <button id="music-toggle" class="music-btn" aria-label="Silenciar música">🔊</button>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -41,8 +41,6 @@ let proposalStarsAnimId = null;
 
 /* ---- AUDIO ---- */
 let musicStarted = false;
-
-/* Segundo de la canción donde empieza "¿me dirías que sí...?" */
 const MUSIC_START_TIME = 52;
 
 function startMusic() {
@@ -50,32 +48,49 @@ function startMusic() {
   const audio = document.getElementById('bg-music');
   if (!audio) return;
 
-  /* iOS/Android requieren que currentTime se setee DESPUÉS de play() en algunos casos */
-  audio.volume = 0;
+  audio.volume = 0.80;
+  audio.currentTime = MUSIC_START_TIME;
 
-  const playPromise = audio.play();
-
-  if (playPromise !== undefined) {
-    playPromise.then(() => {
+  const p = audio.play();
+  if (p !== undefined) {
+    p.then(() => {
       musicStarted = true;
-      /* Saltar al segundo correcto una vez que está reproduciéndose */
-      audio.currentTime = MUSIC_START_TIME;
-      /* Fade-in suave */
-      let vol = 0;
-      const fadeIn = setInterval(() => {
-        vol = Math.min(vol + 0.02, 0.80);
-        audio.volume = vol;
-        if (vol >= 0.80) clearInterval(fadeIn);
-      }, 50);
+      hideMusicFallback();
     }).catch(() => {
-      /* Navegador bloqueó — reintentar en próximo gesto */
+      /* Autoplay bloqueado — mostrar botón fallback */
       musicStarted = false;
+      showMusicFallback();
     });
   } else {
-    /* Fallback para navegadores sin Promise */
     musicStarted = true;
-    audio.currentTime = MUSIC_START_TIME;
   }
+}
+
+function showMusicFallback() {
+  const btn = document.getElementById('btn-music-start');
+  if (btn) btn.classList.add('visible');
+}
+
+function hideMusicFallback() {
+  const btn = document.getElementById('btn-music-start');
+  if (btn) { btn.classList.remove('visible'); btn.style.display = 'none'; }
+}
+
+function bindMusicFallback() {
+  const btn = document.getElementById('btn-music-start');
+  if (!btn) return;
+  function activate() {
+    const audio = document.getElementById('bg-music');
+    if (!audio) return;
+    audio.volume = 0.80;
+    audio.currentTime = MUSIC_START_TIME;
+    audio.play().then(() => {
+      musicStarted = true;
+      hideMusicFallback();
+    }).catch(() => {});
+  }
+  btn.addEventListener('click',     activate);
+  btn.addEventListener('touchend',  activate, { passive: true });
 }
 
 function bindMusicToggle() {
@@ -102,11 +117,12 @@ function bindMusicToggle() {
    INICIALIZACIÓN
    ============================================ */
 document.addEventListener('DOMContentLoaded', () => {
-  initLetterStars();   /* estrellas pantalla carta */
+  initLetterStars();
   initProposalStars();
   initParticles();
   bindButtons();
   bindOpenLetter();
+  bindMusicFallback();
 });
 
 /* Evitar salto de dt cuando la pestaña vuelve a estar visible */

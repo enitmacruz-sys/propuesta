@@ -8,9 +8,9 @@
 </head>
 <body>
 
-  <!-- Audio — arranca al abrir la carta -->
+  <!-- Audio -->
   <audio id="bg-music" loop preload="auto">
-    <source src="Sebastian Yatra - Cristina (Letra).mp3" type="audio/mpeg">
+    <source src="cristina.mp3" type="audio/mpeg">
   </audio>
 
   <!-- ===== PANTALLA 0: CARTA ===== -->
@@ -32,6 +32,11 @@
 
       <button id="btn-open" class="btn-open" aria-label="Abrir carta">
         💌 Abrir
+      </button>
+
+      <!-- Botón fallback para música en celular (visible solo si autoplay falla) -->
+      <button id="btn-music-start" class="btn-music-start" aria-label="Reproducir música">
+        🎵 Activar música
       </button>
     </div>
   </section>
